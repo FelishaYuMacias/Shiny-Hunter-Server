@@ -45,16 +45,22 @@ const typeDefs = gql`
   type Mutation {
     addUser(username: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
-    addHunt(method: String,
-        counter: Number,
+    addHunt(method: String!,
+        counter: Number!,
         dateStarted: Date,
         dateCompleted: Date,
-        phase: String,
+        phase: String!,
         game: String): Hunt
-    addPokemon(species: String,
-        level: Number,
-        form: String,
-        gender: String): Pokemon
+    updateHunt(method: String!,
+        counter: Number!,
+        dateStarted: Date,
+        dateCompleted: Date,
+        phase: String!,
+        game: String): Hunt
+    addPokemon(species: String!,
+        level: Number!,
+        form: String!,
+        gender: String!): Pokemon
     removeHunt(huntId: ID!): Hunt
     removePokemon(pokemonId: ID!): Pokemon
     

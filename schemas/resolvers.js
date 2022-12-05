@@ -24,7 +24,7 @@ const resolvers = {
             return await Hunt.findOne({ _id }).populate('pokemon');
         },
         allpokemon: async () => {
-            return await Pokemon.find();
+            return await Pokemon.find({});
           },
         pokemon: async ({pokemonId}) => {
             return await Pokemon.findOne({ _id: pokemonId });
@@ -80,6 +80,22 @@ Mutation: {
           { $addToSet: { hunts: hunt._id } }
         );
 
+        return hunt;
+      }
+      throw new AuthenticationError('You need to be logged in!');
+    },
+    updateHunt: async (parent,{id, method, counter, dateStarted, dateCompleted, phase, game, pokemon}, context) => {
+      if (context.user) {
+        const hunt = await Hunt.findOneAndUpdate({_id:id},{
+            method, 
+            counter, 
+            dateStarted, 
+            dateCompleted, 
+            phase, 
+            game, 
+            pokemon,
+            user: context.user.username,
+        }, { new: true });
         return hunt;
       }
       throw new AuthenticationError('You need to be logged in!');
