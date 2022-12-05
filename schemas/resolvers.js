@@ -18,7 +18,7 @@ const resolvers = {
             });
         },
         hunts: async () => {
-            return await Hunt.find().populate('pokemon');
+            return await Hunt.find({}).populate('pokemon');
         },
         hunt: async () => {
             return await Hunt.findOne({ _id }).populate('pokemon');
@@ -45,11 +45,11 @@ Mutation: {
       const token = signToken(user);
       return { token, user };
     },
-    login: async (parent, { email, password }) => {
-      const user = await User.findOne({ email });
+    login: async (parent, { username, password }) => {
+      const user = await User.findOne({ username });
 
       if (!user) {
-        throw new AuthenticationError('No user found with this email address');
+        throw new AuthenticationError('No user found with this username');
       }
 
       const correctPw = await user.isCorrectPassword(password);
