@@ -15,7 +15,7 @@ const typeDefs = gql`
     dateStarted: Date
     dateCompleted: Date
     phase: String
-    game: String,
+    game: String
     pokemon: Pokemon
   }
 
@@ -37,6 +37,7 @@ const typeDefs = gql`
     user(username: String!): User
     hunts:(username: String):[Hunt]
     hunt:(huntId:ID!): Hunt
+    allpokemon:[Pokemon]
     pokemon(pokemonId:ID!): Pokemon
     me: User
   }

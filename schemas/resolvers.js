@@ -6,26 +6,35 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
     Query: {
         users: async () => {
-            return User.find().populate('hunts');
+            return await User.find({}).populate('hunts').populate({
+              path: 'hunt',
+              populate: 'pokemon'
+            });
         },
         user: async (parent, { username }) => {
-            return User.findOne({ username }).populate('hunts');
+            return await User.findOne({ username }).populate('hunts').populate({
+              path: 'hunt',
+              populate: 'pokemon'
+            });
         },
         hunts: async () => {
-            return Hunt.find().populate('pokemon');
+            return await Hunt.find().populate('pokemon');
         },
         hunt: async () => {
-            return Hunt.findOne({ _id }).populate('pokemon');
+            return await Hunt.findOne({ _id }).populate('pokemon');
         },
         allpokemon: async () => {
-            return Pokemon.find();
+            return await Pokemon.find();
           },
         pokemon: async ({pokemonId}) => {
-            return Pokemon.findOne({ _id: pokemonId });
+            return await Pokemon.findOne({ _id: pokemonId });
         },
         me: async (parent, args, context) => {
             if (context.user) {
-              return User.findOne({ _id: context.user._id }).populate('hunts');
+              return await User.findOne({ _id: context.user._id }).populate('hunts').populate({
+                path: 'hunt',
+                populate: 'pokemon'
+              });
             }
             throw new AuthenticationError('You need to be logged in!');
           },
