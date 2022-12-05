@@ -1,45 +1,51 @@
 const { Schema, model } = require('mongoose');
 const dateFormat = require('../utils/dateFormat');
 
-const thoughtSchema = new Schema({
-  thoughtText: {
+const huntSchema = new Schema({
+  method: {
     type: String,
-    required: 'You need to leave a thought!',
+    required: 'You need to pick a method!',
     minlength: 1,
     maxlength: 280,
     trim: true,
   },
-  thoughtAuthor: {
-    type: String,
+  counter: {
+    type: Number,
     required: true,
-    trim: true,
+    default: 0,
   },
-  createdAt: {
+  dateStarted: {
     type: Date,
     default: Date.now,
     get: (timestamp) => dateFormat(timestamp),
   },
-  comments: [
-    {
-      commentText: {
-        type: String,
-        required: true,
-        minlength: 1,
-        maxlength: 280,
-      },
-      commentAuthor: {
-        type: String,
-        required: true,
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-        get: (timestamp) => dateFormat(timestamp),
-      },
+  dateCompleted: {
+    type: Date,
+    get: (timestamp) => dateFormat(timestamp),
+  },
+  phase: {
+    type: String,
+    required: 'You need to pick a phase!',
+    minlength: 1,
+    maxlength: 280,
+    trim: true,
+  },
+  game: {
+    type: String,
+    minlength: 1,
+    maxlength: 280,
+    trim: true,
+  },
+  pokemon: {
+      type: Schema.Types.ObjectId,
+      ref: 'Pokemon',
     },
-  ],
+  user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
 });
 
-const Thought = model('Thought', thoughtSchema);
+const Hunt = model('Hunt', huntSchema);
 
-module.exports = Thought;
+module.exports = Hunt;
