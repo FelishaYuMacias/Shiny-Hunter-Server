@@ -1,5 +1,3 @@
-gender
-
 const { Schema, model } = require('mongoose');
 
 const pokemonSchema = new Schema({

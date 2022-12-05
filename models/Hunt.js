@@ -39,11 +39,7 @@ const huntSchema = new Schema({
   pokemon: {
       type: Schema.Types.ObjectId,
       ref: 'Pokemon',
-    },
-  user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
+    }
 });
 
 const Hunt = model('Hunt', huntSchema);
