@@ -3,7 +3,7 @@ const router = express.Router();
 const userRoutes = require("./userController")
 const jwt =require("jsonwebtoken")
 
-router.use("/api/users")
+// router.use("/api/users")
 
 router.get("/token",(req,res)=>{
     const token = jwt.sign({
@@ -32,3 +32,5 @@ router.get("/readtoken",(req,res)=>{
 })
 
 router.use("/api/users",userRoutes)
+
+module.exports= router
