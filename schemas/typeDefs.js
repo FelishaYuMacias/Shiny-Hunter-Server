@@ -58,10 +58,10 @@ const typeDefs = gql`
         phase: String!,
         game: String): Hunt
     removeHunt(huntId: ID!): Hunt
-    updatePokemon(species: String!,
-        level: Number!,
-        form: String!,
-        gender: String!): Pokemon
+    updatePokemon(species: String,
+        level: Number,
+        form: String,
+        gender: String): Pokemon
         addPokemon(species: String!,
         level: Number!,
         form: String!,

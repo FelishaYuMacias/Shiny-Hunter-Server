@@ -64,16 +64,16 @@ Mutation: {
     },
     addHunt: async (parent,{ method, counter, dateStarted, dateCompleted, phase, game, pokemon}, context) => {
       if (context.user) {
-        const hunt = await Hunt.create({
-            method, 
-            counter, 
-            dateStarted, 
-            dateCompleted, 
-            phase, 
-            game, 
-            pokemon,
-            user: context.user.username,
-        });
+        const hunt = await Hunt.create(
+          {method}, 
+          {counter}, 
+          {dateStarted}, 
+          {dateCompleted}, 
+          {phase}, 
+          {game}, 
+          {pokemon},
+          {user: context.user.username}
+        );
 
         await User.findOneAndUpdate(
           { _id: context.user._id },
@@ -86,16 +86,18 @@ Mutation: {
     },
     updateHunt: async (parent,{id, method, counter, dateStarted, dateCompleted, phase, game, pokemon}, context) => {
       if (context.user) {
-        const hunt = await Hunt.findOneAndUpdate({_id:id},{
-            method, 
-            counter, 
-            dateStarted, 
-            dateCompleted, 
-            phase, 
-            game, 
-            pokemon,
-            user: context.user.username,
-        }, { new: true });
+        const hunt = await Hunt.findOneAndUpdate(
+          {_id:id},
+        {method}, 
+        {counter}, 
+        {dateStarted}, 
+        {dateCompleted}, 
+        {phase}, 
+        {game}, 
+        {pokemon},
+        {user: context.user.username}, 
+        { new: true }
+        );
         return hunt;
       }
       throw new AuthenticationError('You need to be logged in!');
@@ -132,12 +134,12 @@ Mutation: {
       }
       throw new AuthenticationError('You need to be logged in!');
     },
-    updatePokemon: async (parent, { id, huntId, species, level, form, gender }) => {
+    updatePokemon: async (parent, { id, species, level, form, gender }) => {
       if (context.user) {
       // Find and update the matching class using the destructured args
-      return await Hunt.findOneAndUpdate(
+      return await Pokemon.findOneAndUpdate(
         { _id: id }, 
-        { huntId, species, level, form, gender },
+        { species, level, form, gender },
         // Return the newly updated object instead of the original
         { new: true }
       );
