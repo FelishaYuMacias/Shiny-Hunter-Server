@@ -100,23 +100,6 @@ Mutation: {
       }
       throw new AuthenticationError('You need to be logged in!');
     },
-    addPokemon: async (parent, { huntId, species, level, form, gender }, context) => {
-      if (context.user) {
-        return Hunt.findOneAndUpdate(
-          { _id: huntId },
-          {
-            $addToSet: {
-              pokemon: { species, level, form, gender},
-            },
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-      }
-      throw new AuthenticationError('You need to be logged in!');
-    },
     removeHunt: async (parent, { huntId }, context) => {
       if (context.user) {
         const hunt = await Hunt.findOneAndDelete({
@@ -131,6 +114,35 @@ Mutation: {
         return hunt;
       }
       throw new AuthenticationError('You need to be logged in!');
+    },
+    addPokemon: async (parent, { huntId, species, level, form, gender }, context) => {
+      if (context.user) {
+        return await Hunt.findOneAndUpdate(
+          { _id: huntId },
+          {
+            $addToSet: {
+              pokemon: { species, level, form, gender},
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+      }
+      throw new AuthenticationError('You need to be logged in!');
+    },
+    updatePokemon: async (parent, { id, huntId, species, level, form, gender }) => {
+      if (context.user) {
+      // Find and update the matching class using the destructured args
+      return await Hunt.findOneAndUpdate(
+        { _id: id }, 
+        { huntId, species, level, form, gender },
+        // Return the newly updated object instead of the original
+        { new: true }
+      );
+    }
+    throw new AuthenticationError('You need to be logged in!');
     },
     removePokemon: async (parent, { pokemonId }, context) => {
         if (context.user) {
