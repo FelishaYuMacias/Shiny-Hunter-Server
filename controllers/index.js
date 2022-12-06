@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const userRoutes = require("./userController")
+const huntRoutes = require("./huntController")
+const pokemonRoutes = require("./pokemonController")
 const jwt =require("jsonwebtoken")
 
 // router.use("/api/users")
@@ -32,5 +34,6 @@ router.get("/readtoken",(req,res)=>{
 })
 
 router.use("/api/users",userRoutes)
+router.use("/api/hunts", huntRoutes)
 
 module.exports= router
