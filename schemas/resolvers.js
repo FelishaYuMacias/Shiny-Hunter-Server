@@ -6,26 +6,35 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
     Query: {
         users: async () => {
-            return User.find().populate('hunts');
+            return await User.find({}).populate('hunts').populate({
+              path: 'hunt',
+              populate: 'pokemon'
+            });
         },
         user: async (parent, { username }) => {
-            return User.findOne({ username }).populate('hunts');
+            return await User.findOne({ username }).populate('hunts').populate({
+              path: 'hunt',
+              populate: 'pokemon'
+            });
         },
         hunts: async () => {
-            return Hunt.find().populate('pokemon');
+            return await Hunt.find({}).populate('pokemon');
         },
         hunt: async () => {
-            return Hunt.findOne({ _id }).populate('pokemon');
+            return await Hunt.findOne({ _id }).populate('pokemon');
         },
         allpokemon: async () => {
-            return Pokemon.find();
+            return await Pokemon.find({});
           },
         pokemon: async ({pokemonId}) => {
-            return Pokemon.findOne({ _id: pokemonId });
+            return await Pokemon.findOne({ _id: pokemonId });
         },
         me: async (parent, args, context) => {
             if (context.user) {
-              return User.findOne({ _id: context.user._id }).populate('hunts');
+              return await User.findOne({ _id: context.user._id }).populate('hunts').populate({
+                path: 'hunt',
+                populate: 'pokemon'
+              });
             }
             throw new AuthenticationError('You need to be logged in!');
           },
@@ -36,11 +45,11 @@ Mutation: {
       const token = signToken(user);
       return { token, user };
     },
-    login: async (parent, { email, password }) => {
-      const user = await User.findOne({ email });
+    login: async (parent, { username, password }) => {
+      const user = await User.findOne({ username });
 
       if (!user) {
-        throw new AuthenticationError('No user found with this email address');
+        throw new AuthenticationError('No user found with this username');
       }
 
       const correctPw = await user.isCorrectPassword(password);
@@ -55,16 +64,16 @@ Mutation: {
     },
     addHunt: async (parent,{ method, counter, dateStarted, dateCompleted, phase, game, pokemon}, context) => {
       if (context.user) {
-        const hunt = await Hunt.create({
-            method, 
-            counter, 
-            dateStarted, 
-            dateCompleted, 
-            phase, 
-            game, 
-            pokemon,
-            user: context.user.username,
-        });
+        const hunt = await Hunt.create(
+          {method}, 
+          {counter}, 
+          {dateStarted}, 
+          {dateCompleted}, 
+          {phase}, 
+          {game}, 
+          {pokemon},
+          {user: context.user.username}
+        );
 
         await User.findOneAndUpdate(
           { _id: context.user._id },
@@ -75,20 +84,21 @@ Mutation: {
       }
       throw new AuthenticationError('You need to be logged in!');
     },
-    addPokemon: async (parent, { huntId, species, level, form, gender }, context) => {
+    updateHunt: async (parent,{id, method, counter, dateStarted, dateCompleted, phase, game, pokemon}, context) => {
       if (context.user) {
-        return Hunt.findOneAndUpdate(
-          { _id: huntId },
-          {
-            $addToSet: {
-              pokemon: { species, level, form, gender},
-            },
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
+        const hunt = await Hunt.findOneAndUpdate(
+          {_id:id},
+        {method}, 
+        {counter}, 
+        {dateStarted}, 
+        {dateCompleted}, 
+        {phase}, 
+        {game}, 
+        {pokemon},
+        {user: context.user.username}, 
+        { new: true }
         );
+        return hunt;
       }
       throw new AuthenticationError('You need to be logged in!');
     },
@@ -106,6 +116,35 @@ Mutation: {
         return hunt;
       }
       throw new AuthenticationError('You need to be logged in!');
+    },
+    addPokemon: async (parent, { huntId, species, level, form, gender }, context) => {
+      if (context.user) {
+        return await Hunt.findOneAndUpdate(
+          { _id: huntId },
+          {
+            $addToSet: {
+              pokemon: { species, level, form, gender},
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+      }
+      throw new AuthenticationError('You need to be logged in!');
+    },
+    updatePokemon: async (parent, { id, species, level, form, gender }) => {
+      if (context.user) {
+      // Find and update the matching class using the destructured args
+      return await Pokemon.findOneAndUpdate(
+        { _id: id }, 
+        { species, level, form, gender },
+        // Return the newly updated object instead of the original
+        { new: true }
+      );
+    }
+    throw new AuthenticationError('You need to be logged in!');
     },
     removePokemon: async (parent, { pokemonId }, context) => {
         if (context.user) {

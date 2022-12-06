@@ -15,7 +15,7 @@ const typeDefs = gql`
     dateStarted: Date
     dateCompleted: Date
     phase: String
-    game: String,
+    game: String
     pokemon: Pokemon
   }
 
@@ -37,6 +37,7 @@ const typeDefs = gql`
     user(username: String!): User
     hunts:(username: String):[Hunt]
     hunt:(huntId:ID!): Hunt
+    allpokemon:[Pokemon]
     pokemon(pokemonId:ID!): Pokemon
     me: User
   }
@@ -44,17 +45,27 @@ const typeDefs = gql`
   type Mutation {
     addUser(username: String!, password: String!): Auth
     login(username: String!, password: String!): Auth
-    addHunt(method: String,
-        counter: Number,
+    addHunt(method: String!,
+        counter: Number!,
         dateStarted: Date,
         dateCompleted: Date,
-        phase: String,
+        phase: String!,
         game: String): Hunt
-    addPokemon(species: String,
+    updateHunt(method: String!,
+        counter: Number!,
+        dateStarted: Date,
+        dateCompleted: Date,
+        phase: String!,
+        game: String): Hunt
+    removeHunt(huntId: ID!): Hunt
+    updatePokemon(species: String,
         level: Number,
         form: String,
         gender: String): Pokemon
-    removeHunt(huntId: ID!): Hunt
+        addPokemon(species: String!,
+        level: Number!,
+        form: String!,
+        gender: String!): Pokemon
     removePokemon(pokemonId: ID!): Pokemon
     
   }
