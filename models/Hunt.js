@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const dateFormat = require('../utils/dateFormat');
+// const dateFormat = require('../utils/dateFormat');
 
 const huntSchema = new Schema({
   method: {
@@ -17,11 +17,11 @@ const huntSchema = new Schema({
   dateStarted: {
     type: Date,
     default: Date.now,
-    get: (timestamp) => dateFormat(timestamp),
+    // get: (timestamp) => dateFormat(timestamp),
   },
   dateCompleted: {
     type: Date,
-    get: (timestamp) => dateFormat(timestamp),
+    // get: (timestamp) => dateFormat(timestamp),
   },
   phase: {
     type: String,
