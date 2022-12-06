@@ -1,17 +1,17 @@
-const { Hunt, User, Pokemon } = require('../../models');
+const { Hunt, User, Pokemon } = require('../models');
 const express = require('express');
 const router = express();
 
-module.exports = {
+
     // Function to get all of the hunts by invoking the find() method with no arguments.
     // Then we return the results as JSON, and catch any errors. Errors are sent as JSON with a message and a 500 status code
-    getHunts(req, res) {
+    router.get("/", (req, res) => {
       Hunt.find()
         .then((hunts) => res.json(hunts))
         .catch((err) => res.status(500).json(err));
-    },
+    })
     // Gets a single hunt using the findOneAndUpdate method. We pass in the ID of the hunt and then respond with it, or an error if not found
-    getSingleHunt(req, res) {
+    router.get("/:huntId", (req, res) => {
       Hunt.findOne({ _id: req.params.huntId })
         .then((hunt) =>
           !hunt
@@ -19,10 +19,10 @@ module.exports = {
             : res.json(hunt)
         )
         .catch((err) => res.status(500).json(err));
-    },
+    })
     // Creates a new hunt. Accepts a request body with the entire hunt object.
     // Because hunts are associated with Users, we then update the User who created the app and add the ID of the hunt to the hunts array
-    createHunt(req, res) {
+    router.post("/", (req, res) => {
       Hunt.create(req.body)
         .then((hunt) => {
           return User.findOneAndUpdate(
@@ -42,9 +42,9 @@ module.exports = {
           console.log(err);
           res.status(500).json(err);
         });
-    },
+    })
     // Updates and hunt using the findOneAndUpdate method. Uses the ID, and the $set operator in mongodb to inject the request body. Enforces validation.
-    updateHunt(req, res) {
+    router.put("/:huntId", (req, res) => {
       Hunt.findOneAndUpdate(
         { _id: req.params.huntId },
         { $set: req.body },
@@ -59,10 +59,10 @@ module.exports = {
           console.log(err);
           res.status(500).json(err);
         });
-    },
+    })
     // Deletes an hunt from the database. Looks for an app by ID.
     // Then if the app exists, we look for any users associated with the app based on he app ID and update the hunts array for the User.
-    deleteHunt(req, res) {
+    router.delete("/:huntId", (req, res) => {
       Hunt.findOneAndRemove({ _id: req.params.huntId })
         .then((hunt) =>
           !hunt
@@ -76,11 +76,10 @@ module.exports = {
         .then((user) =>
           !user
             ? res.status(404).json({
-                message: 'Hunt created but no user with this id!',
+                message: 'Hunt deleted but no user with this id!',
               })
             : res.json({ message: 'Hunt successfully deleted!' })
         )
         .catch((err) => res.status(500).json(err));
-    },
-  };
-  
+    })
+    module.exports = router  

@@ -35,5 +35,6 @@ router.get("/readtoken",(req,res)=>{
 
 router.use("/api/users",userRoutes)
 router.use("/api/hunts", huntRoutes)
+router.use("/api/pokemon", pokemonRoutes)
 
 module.exports= router
