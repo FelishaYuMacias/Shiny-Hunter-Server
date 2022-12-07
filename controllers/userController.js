@@ -3,11 +3,12 @@ const router = express.Router();
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { User, Hunt, Pokemon } = require('../models');
+const { populate } = require('../models/User');
 
 router.get("/", (req, res) => {
   User.find({
   })
-    .populate('hunts')
+    .populate({path:'hunts', populate:{path:'pokemon'}})
     .then(users => {
       res.json(users);
     }).catch(err => {
