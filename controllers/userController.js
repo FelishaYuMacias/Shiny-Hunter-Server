@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken")
 const { User } = require('../models');
 
     router.get("/", (req, res) => {
-        User.findAll({
+        User.find({
         }).then(users => {
             res.json(users);
         }).catch(err => {
@@ -24,36 +24,35 @@ const { User } = require('../models');
         }
     })
     
-    router.post("api/users/signup", (req, res) => {
-        User.create(req.body).then(newUser => {
+    router.post("/signup",(req,res)=>{
+        User.create(req.body).then(newUser=>{
             const token = jwt.sign({
-                id: newUser.id,
-                email: newUser.email
-            }, process.env.JWT_SECRET, {
-                expiresIn: "2h"
+                id:newUser.id,
+                username:newUser.username
+            },process.env.JWT_SECRET,{
+                expiresIn:"2h"
             })
             return res.json({
                 token,
-                user: newUser
+                user:newUser
             })
         })
     })
     
-    
     router.post("/login", (req, res) => {
         User.findOne({
             where: {
-                email: req.body.email
+                username: req.body.username
             }
         }).then(foundUser => {
             if (!foundUser) {
-                return res.status(401).json({ msg: "Your email or password is incorrect!" });
-            } else if (!bcrypt.compareSync(req.body.password, foundUser.password)) {
-                return res.status(401).json({ msg: "Your email or password is incorrect!" });
+                return res.status(401).json({ msg: "Your username or password is incorrect!" });
+            } else if (!bcrypt.compareSync(req.body.password,foundUser.password)) {
+                return res.status(401).json({ msg: "Your username or password is incorrect!" });
             } else {
                 const token = jwt.sign({
-                    id: foundUser.id,
-                    email: foundUser.email
+                    id:foundUser.id,
+                    username:foundUser.username
                 }, process.env.JWT_SECRET, {
                     expiresIn: "2h"
                 })
