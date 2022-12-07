@@ -5,7 +5,7 @@ const huntRoutes = require("./huntController")
 const pokemonRoutes = require("./pokemonController")
 const jwt =require("jsonwebtoken")
 
-// router.use("/api/users")
+
 
 router.get("/token",(req,res)=>{
     const token = jwt.sign({

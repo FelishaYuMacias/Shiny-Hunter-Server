@@ -18,22 +18,30 @@ const userSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Hunt',
     }
-  ]
+  ], 
 });
 
-// userSchema.pre('save', async function (next) {
-//   if (this.isNew || this.isModified('password')) {
-//     const saltRounds = 10;
-//     this.password = await bcrypt.hash(this.password, saltRounds);
-//   }
+userSchema.pre('save', async function (next) {
+  try {
+  
+    if (this.isNew) {
+      const salt = await bcrypt.genSalt(10)
+      const hashedPassword = await bcrypt.hash(this.password, salt)
+      this.password = hashedPassword
+    }
+    next()
+  } catch (error) {
+    next(error)
+  }
+})
 
-//   next();
-// });
-
-// userSchema.methods.isCorrectPassword = async function (password) {
-//   return bcrypt.compare(password, this.password);
-// };
-
+userSchema.methods.isValidPassword = async function (password) {
+  try {
+    return await bcrypt.compare(password, this.password)
+  } catch (error) {
+    throw error
+  }
+}
 const User = model('User', userSchema);
 
 module.exports = User;
