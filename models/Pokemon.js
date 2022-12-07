@@ -4,7 +4,6 @@ const pokemonSchema = new Schema({
   species: {
     type: String,
     required: true,
-    unique: true,
   },
   level: {
     type: Number,
