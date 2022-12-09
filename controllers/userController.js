@@ -70,29 +70,63 @@ router.delete("/:id", (req, res) => {
 
 
 
-router.post("/login", (req, res) => {
-  User.findOne({
-    where: {
-      username: req.body.username
-    }
-  }).then(foundUser => {
-    if (!foundUser) {
-      return res.status(401).json({ msg: "Your username or password is incorrect!" });
-    } else if (!bcrypt.compare(req.body.password, foundUser.password)) {
-      return res.status(401).json({ msg: "Your username or password is incorrect!" });
-    } else {
-      const token = jwt.sign({
-        id: foundUser.id,
-        username: foundUser.username
-      }, process.env.JWT_SECRET, {
-        expiresIn: "2h"
-      })
-      return res.json({
-        token,
-        user: foundUser
-      })
-    }
-  })
-})
+// router.post("/login", (req, res) => {
+//   User.findOne({
+//     where: {
+//       username: req.body.username
+//     }
+//   }).then(foundUser => {
+//     if (!foundUser) {
+//       return res.status(401).json({ msg: "Your username or password is incorrect!" });
+//     } else if (!bcrypt.compare(req.body.password, foundUser.password)) {
+//       return res.status(401).json({ msg: "Your username or password is incorrect!" });
+//     } else {
+//       const token = jwt.sign({
+//         id: foundUser.id,
+//         username: foundUser.username
+//       }, process.env.JWT_SECRET, {
+//       })
+//       return res.json({
+//         token,
+//         user: foundUser
+//       })
+//     }
+//   })
+// })
+
+const userLogin = async (userCreds, req, res) => {
+  let { username, password } = userCreds;
+  // First Check if the username is in the database
+  const user = await User.findOne({ username });
+  if (!user) {
+    return  res.status(401).json({ msg: "Your username or password is incorrect!" });
+  }
+  // Now check for the password
+  let foundUser = await bcrypt.compare(password, user.password);
+  if (foundUser) {
+    // Sign in the token and issue it to the user
+    const token = jwt.sign({
+              id: foundUser.id,
+              username: foundUser.username
+            }, process.env.JWT_SECRET, {
+            })
+    return res.json({
+      token,
+      user: user
+      
+
+
+    })
+
+  } else {
+    return  res.status(401).json({ msg: "Your username or password is incorrect!" });
+    };
+  };
+
+
+router.post("/login", async (req, res) => {
+  await userLogin(req.body, "user", res);
+});
 
 module.exports = router  
+
