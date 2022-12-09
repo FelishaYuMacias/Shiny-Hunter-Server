@@ -8,8 +8,9 @@ const app = express();
 
 app.use(cors({
   origin: /(https:\/\/shiny-hunter-server\.herokuapp\.com)\/(.*)$/
+  // origin: 'http://localhost:3000'
 }))
-
+app.options('*', cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(routes);
