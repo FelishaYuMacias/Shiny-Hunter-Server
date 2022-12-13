@@ -44,6 +44,7 @@ router.post("/signup", (req, res) => {
 
 router.get("/:id", (req, res) => {
   User.findOne({ _id: req.params.id })
+  .populate({path:'hunts', populate:{path:'pokemon'}})
     .then((user) =>
       !user
         ? res.status(404).json({ message: 'User was not found!' })
