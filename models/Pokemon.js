@@ -7,17 +7,14 @@ const pokemonSchema = new Schema({
   },
   level: {
     type: Number,
-    required: true,
     min: 1,
     max: 100
   },
   form: {
-    type: String,
-    required: true,
+    type: String
   },
   gender: {
-    type: String,
-    required: true,
+    type: String
   }
 });
 
