@@ -34,7 +34,7 @@ router.post("/", (req, res) => {
     })
     .then((user) =>
       !user
-        ? res.status(404).json({
+        ? res.status(200).json({
           message: 'Hunt created, but found no user with that ID',
         })
         : res.json('Created the hunt 🎉')
