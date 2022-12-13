@@ -25,19 +25,13 @@ router.get("/:pokemonId", (req, res) => {
 router.post("/", (req, res) => {
   Pokemon.create(req.body)
     .then((pokemon) => {
-      return Hunt.findOneAndUpdate(
+      res.status(200).json({ pokemon: pokemon })
+      Hunt.findOneAndUpdate(
         { _id: req.body.huntId },
         { $addToSet: { pokemons: pokemon._id } },
         { new: true }
       );
     })
-    .then((hunt) =>
-      !hunt
-        ? res.status(200).json({
-          message: 'pokemon created, but found no hunt with that ID',
-        })
-        : res.json('Created the pokemon 🎉')
-    )
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
