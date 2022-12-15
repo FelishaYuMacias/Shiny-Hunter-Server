@@ -5,7 +5,14 @@ const huntRoutes = require("./huntController")
 const pokemonRoutes = require("./pokemonController")
 const jwt =require("jsonwebtoken")
 
-
+router.get("/",(req,res)=>{
+    res.send(
+        `This is the homepage for Professor Oak's Shiny Dex server. 
+        
+        For all users use /api/users. 
+        
+        For all Pokemon use api/pokemon. For all hunts use /api/hunts.`)
+})
 
 router.get("/token",(req,res)=>{
     const token = jwt.sign({
