@@ -7,13 +7,18 @@ const jwt =require("jsonwebtoken")
 
 router.get("/",(req,res)=>{
     res.send(
-        `This is the homepage for Professor Oak's Shiny Dex server. 
+        `
+        <h1> This is the homepage for Professor Oak's Shiny Dex server. </h1>
         
-        For all users use /api/users. 
+        <h3>For all users use https://shiny-hunter-server.herokuapp.com//api/users.</h3>
         
-        For all Pokemon use api/pokemon. For all hunts use /api/hunts.`)
-})
+        <h3>For all hunts use https://shiny-hunter-server.herokuapp.com//api/hunts.</h3> 
 
+        <h3>For all pokemon use https://shiny-hunter-server.herokuapp.com//api/pokemon.</h3>
+
+        <h3>For a single user, hunt or pokemon add /id to the respective url.</h3>
+        `)
+})
 router.get("/token",(req,res)=>{
     const token = jwt.sign({
         name:"ash",
